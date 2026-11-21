@@ -14,6 +14,7 @@
     "app:build": "bash apps/macos-native/build-app.sh",
     "app:open": "open apps/macos-native/SYMFORYX.app",
     "app:install": "bash apps/macos-native/build-app.sh && rm -rf /Applications/SYMFORYX.app && cp -R apps/macos-native/SYMFORYX.app /Applications/SYMFORYX.app && open /Applications/SYMFORYX.app",
+    "release:macos": "bash scripts/release-macos.sh",
     "web": "bun run scripts/web.ts",
     "dev": "bun run app",
     "dev:server": "bun --cwd apps/server dev",

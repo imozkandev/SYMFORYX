@@ -94,7 +94,7 @@ export class SymforyxOrchestrator {
       }
     }
 
-    const catalogPath = join(process.cwd(), "registry", "catalog.json");
+    const catalogPath = process.env.SYMFORYX_REGISTRY_PATH || join(process.cwd(), "registry", "catalog.json");
     if (existsSync(catalogPath)) {
       try {
         const items = JSON.parse(readFileSync(catalogPath, "utf8")) as ToolManifest[];

@@ -148,22 +148,43 @@ final class SymforyxStore: ObservableObject {
             return
         }
 
-        // 2. Spawn our own fresh local Bun server on dedicated port 3456 (avoids stale servers on :3000)
-        let projectRoot = resolveProjectRoot()
-        let bunPath = resolveBunPath()
+        // 2. Prefer embedded self-contained backend binary inside SYMFORYX.app/Contents/Resources/symforyx-engine
+        //    (Zero Bun / Node / source-repo requirement for GitHub Release DMG/ZIP users!)
+        let resourceURL = Bundle.main.resourceURL
+        let embeddedEngine = resourceURL?.appendingPathComponent("symforyx-engine")
+        let appSupportDir = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Application Support/SYMFORYX")
+        try? FileManager.default.createDirectory(at: appSupportDir, withIntermediateDirectories: true)
+
         let proc = Process()
-        proc.executableURL = URL(fileURLWithPath: bunPath)
-        proc.arguments = ["run", "apps/server/src/index.ts"]
-        proc.currentDirectoryURL = URL(fileURLWithPath: projectRoot)
         var env = ProcessInfo.processInfo.environment
         env["SYMFORYX_PORT"] = "3456"
         env["SYMFORYX_HOST"] = "127.0.0.1"
+
+        if let engineURL = embeddedEngine, FileManager.default.isExecutableFile(atPath: engineURL.path) {
+            proc.executableURL = engineURL
+            proc.arguments = []
+            proc.currentDirectoryURL = appSupportDir
+            env["SYMFORYX_DB_PATH"] = appSupportDir.appendingPathComponent("symforyx.db").path
+            env["SYMFORYX_DATA_DIR"] = appSupportDir.path
+            if let resPath = resourceURL?.path {
+                env["SYMFORYX_STATIC_DIR"] = resPath + "/web"
+                env["SYMFORYX_REGISTRY_PATH"] = resPath + "/registry/catalog.json"
+            }
+        } else {
+            // Developer mode fallback: run from repo via local Bun
+            let projectRoot = resolveProjectRoot()
+            let bunPath = resolveBunPath()
+            proc.executableURL = URL(fileURLWithPath: bunPath)
+            proc.arguments = ["run", "apps/server/src/index.ts"]
+            proc.currentDirectoryURL = URL(fileURLWithPath: projectRoot)
+        }
         proc.environment = env
 
         do {
             try proc.run()
             self.serverProcess = proc
-            for _ in 0..<45 {
+            for _ in 0..<50 {
                 try? await Task.sleep(nanoseconds: 140_000_000)
                 if await verifyHealthyBackend(port: 3456) {
                     self.baseURL = URL(string: "http://127.0.0.1:3456")!
@@ -176,7 +197,7 @@ final class SymforyxStore: ObservableObject {
             // Fall through to probe other local ports
         }
 
-        // 3. Fallback: probe existing local ports 3000..3005
+        // 3. Fallback: probe existing local ports 3000..3003
         for port in [3000, 3001, 3002, 3003] {
             if await verifyHealthyBackend(port: port) {
                 self.baseURL = URL(string: "http://127.0.0.1:\(port)")!
@@ -187,8 +208,8 @@ final class SymforyxStore: ObservableObject {
         }
 
         self.serverError = l10n.t(
-            "SYMFORYX yerel motoru başlatılamadı (\(bunPath)). Terminalde 'bun run dev:server' ile kontrol edebilirsin.",
-            "Could not start local SYMFORYX engine (\(bunPath))."
+            "SYMFORYX yerel motoru başlatılamadı. Uygulamayı yeniden açmayı deneyin.",
+            "Could not start local SYMFORYX engine. Please relaunch the app."
         )
     }
 

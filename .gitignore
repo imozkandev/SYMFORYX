@@ -12,3 +12,4 @@ data/
 *.log
 target/
 coverage/
+apps/macos-native/SYMFORYX.app/
