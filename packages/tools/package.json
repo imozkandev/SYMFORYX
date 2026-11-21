@@ -1,0 +1,14 @@
+{
+  "name": "@symforyx/tools",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@symforyx/core": "workspace:*",
+    "@symforyx/tools-sdk": "workspace:*"
+  }
+}

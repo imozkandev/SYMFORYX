@@ -1,0 +1,184 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light dark;
+  /* Editorial / Swiss Studio Palette — zero AI-slop purple gradients */
+  --sym-primary: light-dark(#1F4BF4, #5B82FF);
+  --sym-primary-soft: light-dark(rgba(31, 75, 244, 0.08), rgba(91, 130, 255, 0.14));
+  --sym-accent: light-dark(#C9531E, #EB7A47);
+  --sym-success: light-dark(#15803D, #34D399);
+  --sym-warning: light-dark(#B45309, #FBBF24);
+  --sym-error: light-dark(#C81E1E, #F87171);
+
+  --sym-bg: light-dark(#FAFAF8, #0B0B0D);
+  --sym-surface: light-dark(#F2F2EE, #111114);
+  --sym-surface-2: light-dark(#E8E8E2, #19191F);
+  --sym-card: light-dark(#FFFFFF, #141418);
+  --sym-border: light-dark(#E2E2DC, #24242C);
+  --sym-border-strong: light-dark(#CBCBC3, #353540);
+  --sym-text: light-dark(#161614, #EDEDEA);
+  --sym-text-muted: light-dark(#66665F, #8D8D96);
+  --sym-code-bg: light-dark(#F4F4F0, #0F0F13);
+
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+:root:has(> head > meta[name="color-scheme"][content="dark"]) {
+  color-scheme: dark;
+}
+
+:root:has(> head > meta[name="color-scheme"][content="light"]) {
+  color-scheme: light;
+}
+
+:root.high-contrast {
+  --sym-bg: light-dark(#FFFFFF, #000000);
+  --sym-surface: light-dark(#F2F2F2, #0E0E0E);
+  --sym-card: light-dark(#FFFFFF, #000000);
+  --sym-border: light-dark(#111111, #FFFFFF);
+  --sym-text: light-dark(#000000, #FFFFFF);
+  --sym-text-muted: light-dark(#222222, #E0E0E0);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--sym-bg);
+  color: var(--sym-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+code,
+pre,
+.font-mono {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Native Modal Dialogs: scroll containment + clean architectural frame */
+dialog:modal {
+  overscroll-behavior: contain;
+  background: var(--sym-card);
+  color: var(--sym-text);
+  border: 1px solid var(--sym-border-strong);
+  border-radius: 10px;
+  padding: 0;
+  max-width: min(94vw, 980px);
+  max-height: 88vh;
+  width: 100%;
+  margin: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+}
+
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background-color: rgba(8, 8, 10, 0.52);
+}
+
+/* Editorial Markdown Typography */
+.sym-md {
+  line-height: 1.62;
+  font-size: 0.925rem;
+}
+.sym-md > *:first-child {
+  margin-top: 0;
+}
+.sym-md > *:last-child {
+  margin-bottom: 0;
+}
+.sym-md h1,
+.sym-md h2,
+.sym-md h3 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 1rem 0 0.4rem;
+}
+.sym-md h3 {
+  font-size: 0.975rem;
+}
+.sym-md p {
+  margin: 0.45rem 0;
+}
+.sym-md ul,
+.sym-md ol {
+  margin: 0.45rem 0;
+  padding-left: 1.3rem;
+}
+.sym-md ul {
+  list-style: disc;
+}
+.sym-md ol {
+  list-style: decimal;
+}
+.sym-md li {
+  margin: 0.2rem 0;
+}
+.sym-md pre {
+  background: var(--sym-code-bg);
+  border: 1px solid var(--sym-border);
+  border-radius: 6px;
+  padding: 0.8rem 0.95rem;
+  overflow-x: auto;
+  margin: 0.7rem 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.sym-md :not(pre) > code {
+  background: var(--sym-surface-2);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.84em;
+}
+.sym-md table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.7rem 0;
+  font-size: 0.82rem;
+}
+.sym-md th,
+.sym-md td {
+  border: 1px solid var(--sym-border);
+  padding: 0.45rem 0.65rem;
+  text-align: left;
+}
+.sym-md th {
+  background: var(--sym-surface);
+  font-weight: 600;
+}
+.sym-md blockquote {
+  border-left: 2px solid var(--sym-border-strong);
+  margin: 0.6rem 0;
+  padding: 0.2rem 0.8rem;
+  color: var(--sym-text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--sym-border);
+  border-radius: 3px;
+}

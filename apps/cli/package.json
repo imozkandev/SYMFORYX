@@ -1,0 +1,11 @@
+{
+  "name": "@symforyx/cli",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "symforyx": "./src/index.ts"
+  },
+  "dependencies": {
+    "@symforyx/core": "workspace:*"
+  }
+}

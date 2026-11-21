@@ -1,0 +1,28 @@
+id: tasarimdan-koda
+name: Tasarımdan Koda
+description: Bir fikirden tasarım üretir, onayından sonra kodlar ve önizler.
+inputs:
+  brief:
+    type: text
+    label: "Ne tasarlayalım?"
+    placeholder: "Ör. kahve dükkânı için sade bir ana sayfa"
+  framework:
+    type: select
+    label: "Çatı"
+    options: [HTML + Tailwind, React + Tailwind, Vue, Svelte]
+    default: HTML + Tailwind
+steps:
+  - id: tasarim
+    use: role:gorsel-uretim
+    prompt: "{{brief}} için modern, temiz ve erişilebilir bir arayüz tasarımı oluştur."
+  - id: onay
+    type: approval
+    message: "Tasarım uygun mu? Değilse ne değişsin?"
+    on_reject: { goto: tasarim, feedback: true }
+  - id: kod
+    use: role:kodlama
+    attach: [tasarim.image]
+    prompt: "Bu tasarımı {{framework}} ile birebir kodla. Bileşenlere ayır, mobil uyumlu yap."
+outputs: [tasarim, kod]
+budget:
+  max_cost_usd: 1.00

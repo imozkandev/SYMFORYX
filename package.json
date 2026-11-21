@@ -1,0 +1,28 @@
+{
+  "name": "symforyx",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SYMFORYX — Tüm yapay zekâ modellerin ve araçların tek sohbette, uyum içinde çalışır. Bir ozkandev projesi.",
+  "author": "ozkandev",
+  "license": "MIT",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run scripts/dev.ts",
+    "dev:server": "bun --cwd apps/server dev",
+    "dev:web": "bun --cwd apps/web dev",
+    "build": "bun --cwd apps/web build",
+    "check:web": "bun --cwd apps/web check",
+    "app:build": "bash apps/macos-native/build-app.sh",
+    "app:open": "open apps/macos-native/SYMFORYX.app",
+    "start": "bun run apps/server/src/index.ts",
+    "cli": "bun run apps/cli/src/index.ts",
+    "test": "bun --cwd apps/server test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.8.2"
+  }
+}

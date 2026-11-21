@@ -1,0 +1,24 @@
+{
+  "name": "@symforyx/server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "hono": "^4.7.4",
+    "@symforyx/core": "workspace:*",
+    "@symforyx/db": "workspace:*",
+    "@symforyx/providers": "workspace:*",
+    "@symforyx/router": "workspace:*",
+    "@symforyx/context": "workspace:*",
+    "@symforyx/tools-sdk": "workspace:*",
+    "@symforyx/tools-runtime": "workspace:*",
+    "@symforyx/tools": "workspace:*",
+    "@symforyx/flows": "workspace:*",
+    "@symforyx/agent": "workspace:*",
+    "@symforyx/i18n": "workspace:*"
+  }
+}

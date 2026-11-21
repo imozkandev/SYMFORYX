@@ -1,0 +1,3 @@
+# SYMFORYX Bun workspace config
+[test]
+root = "./apps/server/tests"

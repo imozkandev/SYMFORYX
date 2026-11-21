@@ -1,0 +1,20 @@
+services:
+  symforyx:
+    build: .
+    container_name: symforyx
+    restart: unless-stopped
+    ports:
+      - "${SYMFORYX_PORT:-3000}:3000"
+    environment:
+      - SYMFORYX_PORT=3000
+      - SYMFORYX_HOST=0.0.0.0
+      - SYMFORYX_SECRET=${SYMFORYX_SECRET:-change-me-in-production-32-chars-minimum}
+      - SYMFORYX_DB_PATH=/app/data/symforyx.db
+      - SYMFORYX_DATA_DIR=/app/data
+      - SANDBOX_ENABLED=${SANDBOX_ENABLED:-true}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    volumes:
+      - symforyx_data:/app/data
+
+volumes:
+  symforyx_data:

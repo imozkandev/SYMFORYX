@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 360" width="1120" height="360" fill="none" role="img" aria-label="SYMFORYX Architecture">
+  <rect width="1120" height="360" rx="16" fill="#0F1116" stroke="#242731" stroke-width="1.5" />
+
+  <text x="32" y="38" fill="#8B91A1" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" letter-spacing="2.4">
+    SYMFORYX ORCHESTRATION PIPELINE · LOCAL-FIRST ARCHITECTURE
+  </text>
+  <line x1="32" y1="52" x2="1088" y2="52" stroke="#1E212B" stroke-width="1" />
+
+  <!-- Column 1: Inputs -->
+  <g transform="translate(32, 74)">
+    <rect width="236" height="252" rx="12" fill="#151821" stroke="#262A36" stroke-width="1.2" />
+    <text x="18" y="28" fill="#3B82F6" font-family="ui-monospace, monospace" font-size="10" font-weight="600" letter-spacing="1.6">01 · INPUT LAYER</text>
+    <text x="18" y="50" fill="#F3F4F6" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700">Unified Studio Prompt</text>
+
+    <rect x="16" y="68" width="204" height="34" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="28" y="89" fill="#D1D5DB" font-family="ui-monospace, monospace" font-size="11">@claude @gpt @flux @local</text>
+
+    <rect x="16" y="112" width="204" height="34" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="28" y="133" fill="#D1D5DB" font-family="ui-monospace, monospace" font-size="11">37 Slash Commands (/chain)</text>
+
+    <rect x="16" y="156" width="204" height="34" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="28" y="177" fill="#D1D5DB" font-family="ui-monospace, monospace" font-size="11">/reference (URL · Img · Idea)</text>
+
+    <rect x="16" y="200" width="204" height="34" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="28" y="221" fill="#D1D5DB" font-family="ui-monospace, monospace" font-size="11">14 Studio Schemas (Flows)</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M276 200 H304" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" />
+  <path d="M298 194 L306 200 L298 206" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Column 2: Intelligence Core -->
+  <g transform="translate(314, 74)">
+    <rect width="248" height="252" rx="12" fill="#151821" stroke="#3B82F6" stroke-opacity="0.55" stroke-width="1.4" />
+    <text x="18" y="28" fill="#3B82F6" font-family="ui-monospace, monospace" font-size="10" font-weight="600" letter-spacing="1.6">02 · ORCHESTRATION CORE</text>
+    <text x="18" y="50" fill="#F3F4F6" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700">Router + Craft Guard</text>
+
+    <rect x="16" y="68" width="216" height="48" rx="7" fill="#182032" stroke="#2B3A5C" />
+    <text x="28" y="88" fill="#93C5FD" font-family="ui-monospace, monospace" font-size="11" font-weight="600">3-Layer Smart Router (&lt;30ms)</text>
+    <text x="28" y="105" fill="#9CA3AF" font-family="-apple-system, sans-serif" font-size="10.5">Explicit · Rules · Classifier · Modes</text>
+
+    <rect x="16" y="126" width="216" height="48" rx="7" fill="#16241F" stroke="#24473A" />
+    <text x="28" y="146" fill="#6EE7B7" font-family="ui-monospace, monospace" font-size="11" font-weight="600">Token &amp; Cost Optimizer</text>
+    <text x="28" y="163" fill="#9CA3AF" font-family="-apple-system, sans-serif" font-size="10.5">Context pruning · Cache · Live estimate</text>
+
+    <rect x="16" y="184" width="216" height="50" rx="7" fill="#1B1F2B" stroke="#3B4254" />
+    <text x="28" y="204" fill="#F9FAFB" font-family="ui-monospace, monospace" font-size="11" font-weight="600">AI Slop Blocker (0–100 Craft)</text>
+    <text x="28" y="221" fill="#9CA3AF" font-family="-apple-system, sans-serif" font-size="10.5">Anti-cliché directive + Output scrubber</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M570 200 H598" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" />
+  <path d="M592 194 L600 200 L592 206" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Column 3: Providers & Tools -->
+  <g transform="translate(608, 74)">
+    <rect width="232" height="252" rx="12" fill="#151821" stroke="#262A36" stroke-width="1.2" />
+    <text x="18" y="28" fill="#3B82F6" font-family="ui-monospace, monospace" font-size="10" font-weight="600" letter-spacing="1.6">03 · ANY MODEL &amp; TOOL</text>
+    <text x="18" y="50" fill="#F3F4F6" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700">Zero Lock-In Matrix</text>
+
+    <rect x="16" y="68" width="200" height="36" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="26" y="90" fill="#E5E7EB" font-family="ui-monospace, monospace" font-size="10.5">Claude · GPT · Gemini · Grok</text>
+
+    <rect x="16" y="112" width="200" height="36" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="26" y="134" fill="#E5E7EB" font-family="ui-monospace, monospace" font-size="10.5">OpenRouter · DeepSeek · Ollama</text>
+
+    <rect x="16" y="156" width="200" height="36" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="26" y="178" fill="#E5E7EB" font-family="ui-monospace, monospace" font-size="10.5">Flux · Ideogram · Veo · 3D · SFX</text>
+
+    <rect x="16" y="200" width="200" height="34" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="26" y="221" fill="#E5E7EB" font-family="ui-monospace, monospace" font-size="10.5">MCP · Sandbox · Web · Palette</text>
+  </g>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M848 200 H876" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" />
+  <path d="M870 194 L878 200 L870 206" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Column 4: Surfaces & Vault -->
+  <g transform="translate(886, 74)">
+    <rect width="202" height="252" rx="12" fill="#151821" stroke="#262A36" stroke-width="1.2" />
+    <text x="18" y="28" fill="#3B82F6" font-family="ui-monospace, monospace" font-size="10" font-weight="600" letter-spacing="1.6">04 · SURFACES</text>
+    <text x="18" y="50" fill="#F3F4F6" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700">Apps &amp; Local Vault</text>
+
+    <rect x="14" y="68" width="174" height="36" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="24" y="90" fill="#E5E7EB" font-family="ui-monospace, monospace" font-size="10.5">Native macOS SwiftUI</text>
+
+    <rect x="14" y="112" width="174" height="36" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="24" y="134" fill="#E5E7EB" font-family="ui-monospace, monospace" font-size="10.5">Svelte 5 Web + CLI</text>
+
+    <rect x="14" y="156" width="174" height="36" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="24" y="178" fill="#E5E7EB" font-family="ui-monospace, monospace" font-size="10.5">Quotas · Reset · Cost</text>
+
+    <rect x="14" y="200" width="174" height="34" rx="7" fill="#1B1F2B" stroke="#2A3040" />
+    <text x="24" y="221" fill="#E5E7EB" font-family="ui-monospace, monospace" font-size="10.5">SQLite + AES-256-GCM</text>
+  </g>
+</svg>

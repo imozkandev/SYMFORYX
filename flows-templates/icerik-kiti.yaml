@@ -1,0 +1,24 @@
+id: icerik-kiti
+name: İçerik Kiti
+description: Konudan makale, kapak görseli ve 5 sosyal medya paylaşımı üretir.
+inputs:
+  konu:
+    type: text
+    label: "İçerik konusu"
+    placeholder: "Ör. Evden çalışırken verimlilik"
+steps:
+  - id: makale
+    use: role:yazi
+    prompt: "{{konu}} hakkında kapsamlı ve akıcı bir makale yaz."
+  - id: paralel_uretim
+    type: parallel
+    steps:
+      - id: kapak
+        use: role:gorsel-uretim
+        prompt: "{{konu}} için minimalist kapak görseli tasarla."
+      - id: sosyal
+        use: role:genel
+        prompt: "{{konu}} için 5 farklı sosyal medya paylaşımı yaz."
+outputs: [makale, paralel_uretim]
+budget:
+  max_cost_usd: 0.80
