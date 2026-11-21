@@ -17,7 +17,7 @@ struct SymforyxNativeApp: App {
     @StateObject private var store = SymforyxStore()
 
     var body: some Scene {
-        WindowGroup("SYMFORYX") {
+        WindowGroup("SYMFORYX — All AI Models & Tools in One Studio") {
             RootView()
                 .environmentObject(store)
                 .frame(minWidth: 1040, minHeight: 680)
@@ -37,6 +37,28 @@ struct SymforyxNativeApp: App {
                     }
                 }
                 .keyboardShortcut("n", modifiers: .command)
+
+                Button(store.l10n.t("Proje Klasörü Aç…", "Open Folder…")) {
+                    store.openFolderFromMac(inCurrentChat: false)
+                }
+                .keyboardShortcut("o", modifiers: .command)
+
+                Divider()
+
+                Button(store.l10n.t("Komut Paleti", "Command Palette")) {
+                    store.showCommandPalette.toggle()
+                }
+                .keyboardShortcut("k", modifiers: .command)
+
+                Button(store.l10n.t("Proje Terminali", "Toggle Terminal")) {
+                    store.showTerminalDrawer.toggle()
+                }
+                .keyboardShortcut("j", modifiers: .command)
+
+                Button(store.l10n.t("Yerel Web Arayüzünü Aç", "Open Local Web UI")) {
+                    store.openLocalWebUI()
+                }
+                .keyboardShortcut("w", modifiers: [.command, .shift])
             }
         }
     }

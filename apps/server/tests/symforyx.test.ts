@@ -452,4 +452,84 @@ describe("5. End-to-End Orchestrator, API, Tools, Flows & 5-Minute MVP Workflow"
     expect(thread.id).toBeTruthy();
     expect(projectId).toBeTruthy();
   });
+
+  test("Local macOS Project Engine (Claude Code Mode): init folder, tree, read/write/patch, search, shell exec, apply blocks", async () => {
+    const tmpProjectDir = `/tmp/symforyx-test-proj-${Date.now()}`;
+    const openRes = await app.request("/api/v1/projects/open-folder", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: tmpProjectDir, createIfMissing: true, template: "typescript" }),
+    });
+    expect(openRes.status).toBe(201);
+    const opened = await openRes.json();
+    expect(opened.project.rootPath).toBe(tmpProjectDir);
+    expect(opened.createdFiles).toContain("src/index.ts");
+
+    const pid = opened.project.id;
+    const readRes = await app.request(`/api/v1/projects/${pid}/fs/read?path=src/index.ts`);
+    expect(readRes.status).toBe(200);
+    const readData = await readRes.json();
+    expect(readData.content).toContain("SYMFORYX Desktop");
+
+    // Apply fenced code block directly to disk
+    const applyRes = await app.request(`/api/v1/projects/${pid}/fs/apply-blocks`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        markdown: "Here is the utility:\n```ts:src/math.ts\nexport const add = (a: number, b: number) => a + b;\n```\n",
+      }),
+    });
+    expect(applyRes.status).toBe(200);
+    const applyData = await applyRes.json();
+    expect(applyData.applied.length).toBe(1);
+    expect(applyData.applied[0].path).toBe("src/math.ts");
+
+    // Search text across real local project
+    const searchRes = await app.request(`/api/v1/projects/${pid}/fs/search?q=export%20const%20add`);
+    const searchData = await searchRes.json();
+    expect(searchData.matches.length).toBeGreaterThanOrEqual(1);
+
+    // Execute real shell command in local project folder
+    const execRes = await app.request(`/api/v1/projects/${pid}/fs/exec`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ command: "ls -1 src" }),
+    });
+    expect(execRes.status).toBe(200);
+    const execData = await execRes.json();
+    expect(execData.ok).toBe(true);
+    expect(execData.result.stdout).toContain("math.ts");
+
+    // Slash command /tree inside thread bound to local project
+    const treeCmdRes = await app.request("/api/v1/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ threadId: opened.thread.id, message: "/tree", stream: false }),
+    });
+    const treeCmdData = await treeCmdRes.json();
+    const reply = treeCmdData.events.find((e: any) => e.type === "message_done");
+    expect(reply.message.parts[0].text).toContain("src/math.ts");
+
+    // Opening a folder again OUTSIDE a chat creates a brand-new chat thread
+    const reopenOutside = await app.request("/api/v1/projects/open-folder", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: tmpProjectDir }),
+    });
+    expect(reopenOutside.status).toBe(201);
+    const reopened = await reopenOutside.json();
+    expect(reopened.attachedToExistingChat).toBe(false);
+    expect(reopened.thread.id).not.toBe(opened.thread.id);
+
+    // Adding a folder INSIDE an existing chat keeps the exact same thread
+    const attachInside = await app.request("/api/v1/projects/open-folder", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: tmpProjectDir, attachToThreadId: opened.thread.id }),
+    });
+    expect(attachInside.status).toBe(200);
+    const attached = await attachInside.json();
+    expect(attached.attachedToExistingChat).toBe(true);
+    expect(attached.thread.id).toBe(opened.thread.id);
+  });
 });

@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS projects (
   name TEXT NOT NULL,
   description TEXT DEFAULT '',
   instructions TEXT DEFAULT '',
+  root_path TEXT DEFAULT '',
   is_private INTEGER DEFAULT 0,
   allowed_providers TEXT DEFAULT '[]',
   created_at TEXT NOT NULL,

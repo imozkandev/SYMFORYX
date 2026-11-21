@@ -256,7 +256,7 @@
         >
           <FileCode2 class="h-3.5 w-3.5 text-[var(--sym-primary)]" />
           <span>{art.title}</span>
-          <span class="font-mono text-[10px] uppercase text-[var(--sym-text-muted)]">{art.kind}</span>
+          <span lang="en" class="font-mono text-[10px] uppercase text-[var(--sym-text-muted)]">{art.kind}</span>
         </button>
       {/each}
     </div>

@@ -6,6 +6,19 @@ import { streamSSE } from "hono/streaming";
 import { createId, KEYBOARD_SHORTCUTS, SLASH_COMMANDS_CATALOG, type TaskRole, type ToolManifest } from "@symforyx/core";
 import { discoverMcpTools } from "@symforyx/tools-runtime";
 import { SymforyxOrchestrator } from "./orchestrator.ts";
+import {
+  applyMarkdownEditsToProject,
+  deleteProjectFile,
+  getProjectGitDiff,
+  getProjectGitStatus,
+  initProjectFolder,
+  listProjectTree,
+  patchProjectFile,
+  readProjectFile,
+  runProjectShell,
+  searchProjectText,
+  writeProjectFile,
+} from "./local-project.ts";
 
 export function createApp(orchestrator = new SymforyxOrchestrator()) {
   const app = new Hono();
@@ -103,6 +116,194 @@ export function createApp(orchestrator = new SymforyxOrchestrator()) {
   app.delete("/api/v1/projects/:id", (c) => {
     const ok = db.deleteProject(c.req.param("id"));
     return c.json({ ok, projects: db.listProjects(), threads: db.listThreads() });
+  });
+
+  // ==================== LOCAL MACOS PROJECT ENGINE (CLAUDE CODE MODE) ====================
+
+  app.post("/api/v1/projects/open-folder", async (c) => {
+    const body = await c.req.json();
+    const rawPath = String(body.path ?? "").trim();
+    if (!rawPath) return c.json({ error: "Klasör yolu gerekli" }, 400);
+
+    try {
+      const template = (body.template as "empty" | "typescript" | "web" | "python" | "swift") || "empty";
+      const created = body.createIfMissing ? initProjectFolder(rawPath, template) : null;
+      const absPath = created?.rootPath ?? rawPath;
+      if (!existsSync(absPath)) {
+        return c.json({ error: `Klasör bulunamadı: ${absPath}` }, 404);
+      }
+
+      const folderName = String(body.name || absPath.split("/").filter(Boolean).pop() || "Local Project");
+      const attachToThreadId = typeof body.attachToThreadId === "string" && body.attachToThreadId.trim() ? body.attachToThreadId.trim() : null;
+
+      // Case 1: Adding a folder INSIDE an existing active chat -> attach rootPath to that chat's workspace without opening a new chat
+      if (attachToThreadId) {
+        const existingThread = db.getThread(attachToThreadId);
+        if (existingThread) {
+          const updatedProj = db.updateProject(existingThread.projectId, {
+            rootPath: absPath,
+            description: `Local folder: ${absPath}`,
+          });
+          if (updatedProj) {
+            const tree = listProjectTree(absPath);
+            const git = await getProjectGitStatus(absPath);
+            return c.json({
+              project: updatedProj,
+              thread: existingThread,
+              attachedToExistingChat: true,
+              tree,
+              git,
+              createdFiles: created?.createdFiles ?? [],
+              projects: db.listProjects(),
+              threads: db.listThreads(),
+            }, 200);
+          }
+        }
+      }
+
+      // Case 2: Opening/adding a folder OUTSIDE an active chat -> always open a fresh new chat for this folder
+      const existing = db.listProjects().find((p) => p.rootPath === absPath);
+      const project =
+        existing ??
+        db.createProject({
+          name: folderName,
+          rootPath: absPath,
+          description: `Local folder: ${absPath}`,
+          instructions: `This workspace is bound directly to ${absPath}. Use \`\`\`lang:relative/path code fences for file edits.`,
+        });
+
+      const thread = db.createThread({
+        projectId: project.id,
+        title: `${folderName} — New Chat`,
+        mode: db.getSettings().defaultMode,
+      });
+
+      const tree = listProjectTree(absPath);
+      const git = await getProjectGitStatus(absPath);
+      return c.json({
+        project,
+        thread,
+        attachedToExistingChat: false,
+        tree,
+        git,
+        createdFiles: created?.createdFiles ?? [],
+        projects: db.listProjects(),
+        threads: db.listThreads(),
+      }, 201);
+    } catch (err) {
+      return c.json({ error: err instanceof Error ? err.message : String(err) }, 400);
+    }
+  });
+
+  app.get("/api/v1/projects/:id/fs/tree", async (c) => {
+    const project = db.getProject(c.req.param("id"));
+    if (!project?.rootPath) return c.json({ rootPath: null, entries: [], git: null });
+    const entries = listProjectTree(project.rootPath);
+    const git = await getProjectGitStatus(project.rootPath);
+    return c.json({ rootPath: project.rootPath, entries, git });
+  });
+
+  app.get("/api/v1/projects/:id/fs/read", (c) => {
+    const project = db.getProject(c.req.param("id"));
+    if (!project?.rootPath) return c.json({ error: "Bu çalışma alanına yerel klasör bağlı değil" }, 400);
+    const relPath = c.req.query("path") || "";
+    try {
+      return c.json(readProjectFile(project.rootPath, relPath));
+    } catch (err) {
+      return c.json({ error: err instanceof Error ? err.message : String(err) }, 400);
+    }
+  });
+
+  app.post("/api/v1/projects/:id/fs/write", async (c) => {
+    const project = db.getProject(c.req.param("id"));
+    if (!project?.rootPath) return c.json({ error: "Bu çalışma alanına yerel klasör bağlı değil" }, 400);
+    const body = await c.req.json();
+    try {
+      const result = writeProjectFile(project.rootPath, String(body.path || ""), String(body.content ?? ""));
+      const git = await getProjectGitStatus(project.rootPath);
+      return c.json({ ok: true, result, git });
+    } catch (err) {
+      return c.json({ error: err instanceof Error ? err.message : String(err) }, 400);
+    }
+  });
+
+  app.post("/api/v1/projects/:id/fs/patch", async (c) => {
+    const project = db.getProject(c.req.param("id"));
+    if (!project?.rootPath) return c.json({ error: "Bu çalışma alanına yerel klasör bağlı değil" }, 400);
+    const body = await c.req.json();
+    try {
+      const result = patchProjectFile(
+        project.rootPath,
+        String(body.path || ""),
+        String(body.search ?? ""),
+        String(body.replace ?? "")
+      );
+      return c.json({ ok: true, result });
+    } catch (err) {
+      return c.json({ error: err instanceof Error ? err.message : String(err) }, 400);
+    }
+  });
+
+  app.delete("/api/v1/projects/:id/fs/delete", (c) => {
+    const project = db.getProject(c.req.param("id"));
+    if (!project?.rootPath) return c.json({ error: "Bu çalışma alanına yerel klasör bağlı değil" }, 400);
+    const relPath = c.req.query("path") || "";
+    try {
+      const ok = deleteProjectFile(project.rootPath, relPath);
+      return c.json({ ok });
+    } catch (err) {
+      return c.json({ error: err instanceof Error ? err.message : String(err) }, 400);
+    }
+  });
+
+  app.get("/api/v1/projects/:id/fs/search", (c) => {
+    const project = db.getProject(c.req.param("id"));
+    if (!project?.rootPath) return c.json({ matches: [] });
+    const q = c.req.query("q") || "";
+    return c.json({ matches: searchProjectText(project.rootPath, q) });
+  });
+
+  app.get("/api/v1/projects/:id/fs/git", async (c) => {
+    const project = db.getProject(c.req.param("id"));
+    if (!project?.rootPath) return c.json({ status: null, diff: "" });
+    const relPath = c.req.query("path") || undefined;
+    const [status, diff] = await Promise.all([
+      getProjectGitStatus(project.rootPath),
+      getProjectGitDiff(project.rootPath, relPath),
+    ]);
+    return c.json({ status, diff });
+  });
+
+  app.post("/api/v1/projects/:id/fs/exec", async (c) => {
+    const project = db.getProject(c.req.param("id"));
+    if (!project?.rootPath) return c.json({ error: "Bu çalışma alanına yerel klasör bağlı değil" }, 400);
+    const body = await c.req.json();
+    const command = String(body.command || "").trim();
+    if (!command) return c.json({ error: "Komut gerekli" }, 400);
+    try {
+      const result = await runProjectShell(project.rootPath, command);
+      return c.json({ ok: result.exitCode === 0, result });
+    } catch (err) {
+      return c.json({ error: err instanceof Error ? err.message : String(err) }, 400);
+    }
+  });
+
+  app.post("/api/v1/projects/:id/fs/apply-blocks", async (c) => {
+    const project = db.getProject(c.req.param("id"));
+    if (!project?.rootPath) return c.json({ error: "Bu çalışma alanına yerel klasör bağlı değil" }, 400);
+    const body = await c.req.json();
+    let markdown = String(body.markdown ?? "");
+    if (!markdown && body.messageId) {
+      const msg = db.getMessage(String(body.messageId));
+      markdown = msg?.parts.map((p) => (p.type === "text" ? p.text : "")).join("\n") ?? "";
+    }
+    try {
+      const applied = applyMarkdownEditsToProject(project.rootPath, markdown);
+      const git = await getProjectGitStatus(project.rootPath);
+      return c.json({ ok: true, applied, git });
+    } catch (err) {
+      return c.json({ error: err instanceof Error ? err.message : String(err) }, 400);
+    }
   });
 
   // ==================== THREADS & MESSAGES ====================
@@ -233,6 +434,7 @@ export function createApp(orchestrator = new SymforyxOrchestrator()) {
         references: body.references,
         enabledTools: body.enabledTools,
         parentId: body.parentId,
+        autoApplyEdits: Boolean(body.autoApplyEdits),
       })) {
         events.push(ev);
       }
@@ -249,6 +451,7 @@ export function createApp(orchestrator = new SymforyxOrchestrator()) {
         references: body.references,
         enabledTools: body.enabledTools,
         parentId: body.parentId,
+        autoApplyEdits: Boolean(body.autoApplyEdits),
       })) {
         await stream.writeSSE({
           event: ev.type,

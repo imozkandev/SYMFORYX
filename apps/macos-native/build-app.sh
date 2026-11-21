@@ -13,7 +13,7 @@ cat > "$APP/Contents/Info.plist" << 'EOF'
 <plist version="1.0">
 <dict>
   <key>CFBundleDevelopmentRegion</key>
-  <string>tr</string>
+  <string>en</string>
   <key>CFBundleExecutable</key>
   <string>SYMFORYX</string>
   <key>CFBundleIdentifier</key>
@@ -61,6 +61,8 @@ swiftc \
   -framework UniformTypeIdentifiers \
   "$DIR/Sources/Models.swift" \
   "$DIR/Sources/SymforyxStore.swift" \
+  "$DIR/Sources/LocalWorkspaceViews.swift" \
+  "$DIR/Sources/StudioExtraViews.swift" \
   "$DIR/Sources/Views.swift" \
   "$DIR/Sources/AppMain.swift" \
   -o "$BIN"

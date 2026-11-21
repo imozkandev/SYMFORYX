@@ -348,7 +348,7 @@
           <span class="flex items-center gap-2 shrink-0">
             <span class="font-mono font-semibold text-[var(--sym-primary)]">{item.title}</span>
             {#if item.badge}
-              <span class="rounded border border-[var(--sym-border)] bg-[var(--sym-surface)] px-1.5 py-0.5 font-mono text-[9px] uppercase text-[var(--sym-text-muted)]">
+              <span lang="en" class="rounded border border-[var(--sym-border)] bg-[var(--sym-surface)] px-1.5 py-0.5 font-mono text-[9px] uppercase text-[var(--sym-text-muted)]">
                 {item.badge}
               </span>
             {/if}

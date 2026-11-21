@@ -1,7 +1,7 @@
 {
   "name": "SYMFORYX",
   "short_name": "SYMFORYX",
-  "description": "Tüm yapay zekâ modellerin ve araçların tek sohbette, uyum içinde çalışır.",
+  "description": "All AI models and tools, orchestrated in harmony inside one local-first studio.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0C0D10",

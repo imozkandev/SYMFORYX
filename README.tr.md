@@ -98,6 +98,16 @@ bun run app
 bun run app:install
 ```
 
+### 3. Veya Yerel Web Arayüzü Olarak Çalıştır (Tarayıcı / WebView)
+
+İsteyen kullanıcılar aynı yerel SQLite veritabanı ve yerel proje motoruyla doğrudan yerel tarayıcıda (Web UI) da çalıştırabilir:
+
+```bash
+bun run web
+```
+
+*(Ayrıca `SYMFORYX.app` içindeki **Dünya (`⌘⇧W`)** düğmesiyle çalışan yerel Web arayüzünü tek tıkla açabilirsin.)*
+
 > `SYMFORYX.app` arka planda `127.0.0.1:3456` yerel motorunu otomatik başlatır — kurduktan sonra `/Applications` içinden çift tıklayarak veya `⌘Space → SYMFORYX` yazarak doğrudan kullanabilirsin.
 
 ### 3. Bilgisayardan Proje Açma veya Sıfırdan Başlatma

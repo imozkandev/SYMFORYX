@@ -159,7 +159,7 @@ function buildSmartDemoReply(
   // 0a. App Store / Play Store 5-Screen Visual Kit
   if (norm.includes("magaza gorseli") || norm.includes("app store") && norm.includes("ekran")) {
     const html = `<!doctype html>
-<html lang="tr">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -226,7 +226,7 @@ ${html}
   // 0c. 3D Model Interactive Preview + Blender Script
   if (norm.includes("3d model") || norm.includes("3d sahne") || norm.includes("meshy") || norm.includes("blender")) {
     const html3d = `<!doctype html>
-<html lang="tr">
+<html lang="en">
 <head><meta charset="utf-8"/><title>3D Etkileşimli Sahne Önizleme</title>
 <style>body{margin:0;background:#0B0B0E;color:#EDEDEA;font-family:monospace;overflow:hidden}canvas{display:block;width:100vw;height:100vh}.hud{position:fixed;top:12px;left:14px;font-size:11px;background:#16161Ccc;padding:6px 10px;border:1px solid #2A2A34;border-radius:6px}</style>
 </head>
@@ -277,7 +277,7 @@ bpy.context.active_object.data.materials.append(mat)
   // 0d. Music & Audio Synth Player + Suno/Udio Prompts
   if (norm.includes("muzik") || norm.includes("suno") || norm.includes("udio") || norm.includes("web audio")) {
     const htmlAudio = `<!doctype html>
-<html lang="tr">
+<html lang="en">
 <head><meta charset="utf-8"/><title>SYMFORYX Müzik & Synth Stüdyo</title>
 <style>body{margin:0;background:#101014;color:#F1F1EE;font-family:Inter,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}.box{width:100%;max-width:460px;background:#17171D;border:1px solid #2A2A34;border-radius:12px;padding:22px}.tag{font-family:monospace;font-size:10px;color:#EB7A47;letter-spacing:.08em}h2{font-size:18px;margin:6px 0 4px}p{font-size:12px;color:#9A9AA4;margin-bottom:16px}button{background:#1F4BF4;color:#fff;border:0;border-radius:8px;padding:10px 18px;font-weight:600;cursor:pointer;margin-right:8px}button.sec{background:#24242E}.bars{display:flex;gap:4px;height:44px;align-items:flex-end;margin:16px 0}.bars span{flex:1;background:#5B82FF;border-radius:2px;height:20%;transition:height .15s}</style>
 </head>
@@ -377,7 +377,7 @@ Sağdaki **Artefakt Paneli → Önizleme** sekmesinden **▶ Çal** butonuna bas
         };
 
     const html = `<!doctype html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />

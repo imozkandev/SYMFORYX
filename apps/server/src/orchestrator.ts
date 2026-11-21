@@ -35,6 +35,16 @@ import { ToolRuntime, type PermissionResolver } from "@symforyx/tools-runtime";
 import { BUILTIN_TOOLS } from "@symforyx/tools";
 import { FlowEngine, READY_FLOW_TEMPLATES } from "@symforyx/flows";
 import { runAgentLoop } from "@symforyx/agent";
+import {
+  applyMarkdownEditsToProject,
+  buildLocalProjectContextPrompt,
+  getProjectGitDiff,
+  getProjectGitStatus,
+  listProjectTree,
+  readProjectFile,
+  runProjectShell,
+  searchProjectText,
+} from "./local-project.ts";
 
 export type StreamEvent =
   | { type: "user_message"; message: SymMessage }
@@ -266,6 +276,7 @@ export class SymforyxOrchestrator {
     references?: ReferenceItem[];
     enabledTools?: string[];
     parentId?: string | null;
+    autoApplyEdits?: boolean;
     transferNote?: { fromMessageId: string; fromAuthor: string; originalPrompt?: string; visionConverted?: boolean };
   }): AsyncGenerator<StreamEvent> {
     const thread = this.db.getThread(opts.threadId);
@@ -440,6 +451,101 @@ export class SymforyxOrchestrator {
           ].join("\n");
           yield* this.emitSystemAssistantReply(thread.id, userMsg.id, md, "AI Slop Blocker");
           return;
+        }
+
+        // ==================== CLAUDE-CODE LOCAL PROJECT SLASH COMMANDS ====================
+
+        if (cmd === "tree" || cmd === "cat" || cmd === "grep" || cmd === "sh" || cmd === "diff" || cmd === "apply") {
+          const root = project?.rootPath;
+          if (!root) {
+            yield* this.emitSystemAssistantReply(
+              thread.id,
+              userMsg.id,
+              "Bu çalışma alanına henüz bir yerel proje klasörü bağlı değil. Sol menüden **Klasör Aç…** veya **Sıfırdan Proje…** ile Mac'inden bir klasör bağla.",
+              "Local Project"
+            );
+            return;
+          }
+
+          if (cmd === "tree") {
+            const entries = listProjectTree(root, 4, 160);
+            const git = await getProjectGitStatus(root);
+            const lines = entries.map((e) => `${"  ".repeat(e.depth)}${e.kind === "dir" ? "📁" : "·"} \`${e.path}\``);
+            const md = [
+              `### Proje Ağacı — \`${root}\``,
+              git.isGitRepo ? `**Git:** \`${git.branch}\` · ${git.changedFiles.length} değişen dosya` : "_Git deposu değil_",
+              "",
+              lines.length > 0 ? lines.join("\n") : "_(Klasör boş)_",
+            ].join("\n");
+            yield* this.emitSystemAssistantReply(thread.id, userMsg.id, md, "Project Tree");
+            return;
+          }
+
+          if (cmd === "cat") {
+            const target = parsed.slashCommand.args.trim();
+            if (!target) {
+              yield* this.emitSystemAssistantReply(thread.id, userMsg.id, "Kullanım: `/cat src/index.ts`", "Read File");
+              return;
+            }
+            try {
+              const f = readProjectFile(root, target);
+              const ext = f.path.split(".").pop() || "txt";
+              const md = `### \`${f.path}\` (${f.lines} satır, ${f.size} byte)\n\n\`\`\`${ext}:${f.path}\n${f.content.slice(0, 14000)}\n\`\`\``;
+              yield* this.emitSystemAssistantReply(thread.id, userMsg.id, md, "Read File");
+            } catch (e) {
+              yield* this.emitSystemAssistantReply(thread.id, userMsg.id, `Hata: ${e instanceof Error ? e.message : String(e)}`, "Read File");
+            }
+            return;
+          }
+
+          if (cmd === "grep") {
+            const q = parsed.slashCommand.args.trim();
+            if (!q) {
+              yield* this.emitSystemAssistantReply(thread.id, userMsg.id, "Kullanım: `/grep fonksiyonAdi`", "Project Search");
+              return;
+            }
+            const matches = searchProjectText(root, q, 40);
+            const md = matches.length
+              ? `### Arama Sonuçları: \`${q}\` (${matches.length} eşleşme)\n\n` +
+                matches.map((m) => `- \`${m.path}:${m.line}\` — ${m.text}`).join("\n")
+              : `\`${q}\` için projede eşleşme bulunamadı.`;
+            yield* this.emitSystemAssistantReply(thread.id, userMsg.id, md, "Project Search");
+            return;
+          }
+
+          if (cmd === "sh") {
+            const shellCmd = parsed.slashCommand.args.trim();
+            if (!shellCmd) {
+              yield* this.emitSystemAssistantReply(thread.id, userMsg.id, "Kullanım: `/sh bun test` veya `/sh git status`", "Terminal");
+              return;
+            }
+            const res = await runProjectShell(root, shellCmd);
+            const md = [
+              `### Terminal · \`${shellCmd}\` (exit \`${res.exitCode}\` · ${res.durationMs}ms)`,
+              res.stdout.trim() ? `\`\`\`text\n${res.stdout.trim()}\n\`\`\`` : "",
+              res.stderr.trim() ? `**stderr:**\n\`\`\`text\n${res.stderr.trim()}\n\`\`\`` : "",
+            ].filter(Boolean).join("\n\n");
+            yield* this.emitSystemAssistantReply(thread.id, userMsg.id, md, "Terminal");
+            return;
+          }
+
+          if (cmd === "diff") {
+            const diff = await getProjectGitDiff(root, parsed.slashCommand.args.trim() || undefined);
+            yield* this.emitSystemAssistantReply(thread.id, userMsg.id, `### Git Diff\n\n\`\`\`diff\n${diff.slice(0, 14000)}\n\`\`\``, "Git Diff");
+            return;
+          }
+
+          if (cmd === "apply") {
+            const prevAssistant = [...this.db.listMessages(thread.id)].reverse().find((m) => m.role === "assistant");
+            const prevText = prevAssistant?.parts.map((p) => (p.type === "text" ? p.text : "")).join("\n") ?? "";
+            const applied = applyMarkdownEditsToProject(root, prevText);
+            const md = applied.length
+              ? `### Diske Uygulandı (${applied.length} dosya)\n` +
+                applied.map((a) => `- \`${a.path}\` (${a.created ? "oluşturuldu" : "güncellendi"} · ${a.bytes} B)`).join("\n")
+              : "Son asistan yanıtında dosya yolu içeren kod bloğu (` ```ts:src/dosya.ts `) bulunamadı.";
+            yield* this.emitSystemAssistantReply(thread.id, userMsg.id, md, "Apply to Disk");
+            return;
+          }
         }
 
         if (cmd === "optimize") {
@@ -1041,6 +1147,7 @@ export class SymforyxOrchestrator {
               }
             : undefined,
         overrideUserPrompt: injectedToolContext ? `${parsed.cleanText}${injectedToolContext}` : undefined,
+        autoApplyEdits: opts.autoApplyEdits,
         signal: ac.signal,
       });
     } finally {
@@ -1180,6 +1287,7 @@ export class SymforyxOrchestrator {
     compareGroupId?: string;
     overrideUserPrompt?: string;
     extraAttachmentIds?: string[];
+    autoApplyEdits?: boolean;
     signal: AbortSignal;
   }): AsyncGenerator<StreamEvent> {
     const settings = this.db.getSettings();
@@ -1240,6 +1348,17 @@ export class SymforyxOrchestrator {
       tokenOptimizationEnabled: settings.tokenOptimizationEnabled !== false,
       aiSlopBlockerEnabled: settings.aiSlopBlockerEnabled !== false,
     });
+
+    // Inject local macOS project folder tree + Git context + file-fence protocol when rootPath is attached
+    if (project?.rootPath) {
+      try {
+        const git = await getProjectGitStatus(project.rootPath);
+        const localBlock = buildLocalProjectContextPrompt(project.rootPath, git);
+        ctxResult.systemPrompt = `${ctxResult.systemPrompt}\n\n${localBlock}`;
+      } catch {
+        // ignore if folder unreachable
+      }
+    }
 
     // Track cumulative token & cost savings from Context Optimizer
     if (ctxResult.stats.savedTokens > 0) {
@@ -1454,6 +1573,21 @@ export class SymforyxOrchestrator {
         }
       }
 
+      // Auto-Apply file-annotated code edits directly to local project disk if enabled (Claude Code Auto-Accept mode)
+      let autoAppliedNote = "";
+      if (opts.autoApplyEdits && project?.rootPath) {
+        try {
+          const applied = applyMarkdownEditsToProject(project.rootPath, finalCleanText);
+          if (applied.length > 0) {
+            autoAppliedNote =
+              "\n\n---\n**Diske Otomatik Uygulandı:** " +
+              applied.map((a) => `\`${a.path}\` (${a.created ? "yeni" : "güncellendi"})`).join(", ");
+          }
+        } catch {
+          // ignore write failure
+        }
+      }
+
       const finalParts: MessagePart[] = [];
       if (opts.routingNote) {
         finalParts.push({ ...opts.routingNote, fallbackUsed });
@@ -1467,7 +1601,7 @@ export class SymforyxOrchestrator {
           active: true,
         });
       }
-      finalParts.push({ type: "text", text: finalCleanText });
+      finalParts.push({ type: "text", text: finalCleanText + autoAppliedNote });
 
       const finalized = this.db.updateMessage(assistantMsg.id, {
         parts: finalParts,

@@ -45,7 +45,19 @@ export class SymforyxDB {
     this.db = new Database(dbPath, { create: true });
     this.vault = new KeyVault({ secret: opts?.secret, dataDir: opts?.dataDir });
     this.db.exec(SCHEMA_SQL);
+    this.runMigrations();
     this.seedDefaults();
+  }
+
+  private runMigrations() {
+    try {
+      const cols = this.db.query("PRAGMA table_info(projects)").all() as Array<{ name: string }>;
+      if (!cols.some((c) => c.name === "root_path")) {
+        this.db.exec("ALTER TABLE projects ADD COLUMN root_path TEXT DEFAULT ''");
+      }
+    } catch {
+      // ignore if already migrated
+    }
   }
 
   private seedDefaults() {
@@ -55,7 +67,7 @@ export class SymforyxDB {
       const wsId = "ws_default";
       this.db
         .query("INSERT INTO workspaces (id, name, created_at) VALUES (?, ?, ?)")
-        .run(wsId, "Kişisel Çalışma Alanı", now);
+        .run(wsId, "Personal Workspace", now);
 
       const projId = "proj_default";
       this.db
@@ -66,9 +78,9 @@ export class SymforyxDB {
         .run(
           projId,
           wsId,
-          "Genel Çalışma Alanı",
-          "Çoklu model ve araç denemeleri için varsayılan proje",
-          "Türkçe, net ve uygulanabilir yanıtlar üret. Kod üretirken temiz ve modern yapı kullan.",
+          "General Workspace",
+          "Default studio workspace for multi-model orchestration",
+          "Produce clear, actionable, production-grade responses with zero fluff.",
           now,
           now
         );
@@ -79,7 +91,7 @@ export class SymforyxDB {
           `INSERT INTO threads (id, project_id, title, mode, created_at, updated_at)
            VALUES (?, ?, ?, ?, ?, ?)`
         )
-        .run(threadId, projId, "Yeni Sohbet", "smart", now, now);
+        .run(threadId, projId, "New Thread", "smart", now, now);
     }
 
     // Seed default roles if empty
@@ -156,6 +168,7 @@ export class SymforyxDB {
     name: string;
     description?: string;
     instructions?: string;
+    rootPath?: string | null;
     isPrivate?: boolean;
     allowedProviders?: string[];
     workspaceId?: string;
@@ -169,8 +182,8 @@ export class SymforyxDB {
     }
     this.db
       .query(
-        `INSERT INTO projects (id, workspace_id, name, description, instructions, is_private, allowed_providers, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        `INSERT INTO projects (id, workspace_id, name, description, instructions, root_path, is_private, allowed_providers, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .run(
         id,
@@ -178,30 +191,32 @@ export class SymforyxDB {
         input.name,
         input.description ?? "",
         input.instructions ?? "",
+        input.rootPath ?? "",
         input.isPrivate ? 1 : 0,
         JSON.stringify(input.allowedProviders ?? []),
         now,
         now
       );
-    this.logAudit("user", "project.create", id, { name: input.name });
+    this.logAudit("user", "project.create", id, { name: input.name, rootPath: input.rootPath ?? "" });
     return this.getProject(id)!;
   }
 
   updateProject(
     id: string,
-    patch: Partial<Pick<Project, "name" | "description" | "instructions" | "isPrivate" | "allowedProviders">>
+    patch: Partial<Pick<Project, "name" | "description" | "instructions" | "rootPath" | "isPrivate" | "allowedProviders">>
   ): Project | null {
     const cur = this.getProject(id);
     if (!cur) return null;
     const now = new Date().toISOString();
     this.db
       .query(
-        `UPDATE projects SET name = ?, description = ?, instructions = ?, is_private = ?, allowed_providers = ?, updated_at = ? WHERE id = ?`
+        `UPDATE projects SET name = ?, description = ?, instructions = ?, root_path = ?, is_private = ?, allowed_providers = ?, updated_at = ? WHERE id = ?`
       )
       .run(
         patch.name ?? cur.name,
         patch.description ?? cur.description ?? "",
         patch.instructions ?? cur.instructions ?? "",
+        patch.rootPath !== undefined ? patch.rootPath ?? "" : cur.rootPath ?? "",
         (patch.isPrivate ?? cur.isPrivate) ? 1 : 0,
         JSON.stringify(patch.allowedProviders ?? cur.allowedProviders ?? []),
         now,
@@ -225,12 +240,14 @@ export class SymforyxDB {
   }
 
   private mapProject(r: Record<string, unknown>): Project {
+    const rawRoot = String(r.root_path ?? "").trim();
     return {
       id: String(r.id),
       workspaceId: String(r.workspace_id),
       name: String(r.name),
       description: String(r.description ?? ""),
       instructions: String(r.instructions ?? ""),
+      rootPath: rawRoot || null,
       isPrivate: Boolean(r.is_private),
       allowedProviders: JSON.parse(String(r.allowed_providers ?? "[]")),
       createdAt: String(r.created_at),

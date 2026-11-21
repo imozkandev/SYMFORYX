@@ -209,7 +209,7 @@ export const DEFAULT_ROUTING_RULES: RoutingRule[] = [
 ];
 
 export const DEFAULT_USER_SETTINGS: UserSettings = {
-  language: "tr",
+  language: "en",
   theme: "system",
   accentColor: BRAND.primaryColor,
   experienceMode: "expert",

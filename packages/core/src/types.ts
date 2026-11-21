@@ -400,6 +400,7 @@ export interface Project {
   name: string;
   description?: string;
   instructions?: string;
+  rootPath?: string | null;
   isPrivate?: boolean;
   allowedProviders?: string[];
   createdAt: string;

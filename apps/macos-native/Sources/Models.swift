@@ -1,7 +1,7 @@
 import Foundation
 
 enum AppLanguage: String, CaseIterable, Identifiable {
-    case tr, en
+    case en, tr
     var id: String { rawValue }
     var label: String { self == .tr ? "TR" : "EN" }
 }
@@ -12,7 +12,12 @@ enum AppAppearance: String, CaseIterable, Identifiable {
 }
 
 enum NavSection: String, CaseIterable, Identifiable {
-    case chat, quotas, flows, providers
+    case chat, quotas, flows, tools, providers, settings
+    var id: String { rawValue }
+}
+
+enum InspectorTab: String, CaseIterable, Identifiable {
+    case editor, diff, artifacts
     var id: String { rawValue }
 }
 
@@ -26,6 +31,62 @@ struct ProjectDTO: Codable, Identifiable, Hashable {
     let name: String
     let description: String?
     let instructions: String?
+    let rootPath: String?
+}
+
+struct LocalFileEntryDTO: Codable, Identifiable, Hashable {
+    var id: String { path }
+    let path: String
+    let name: String
+    let kind: String // "file" | "dir"
+    let size: Int
+    let depth: Int
+}
+
+struct LocalGitChangedFileDTO: Codable, Identifiable, Hashable {
+    var id: String { "\(status)-\(path)" }
+    let status: String
+    let path: String
+}
+
+struct LocalGitStatusDTO: Codable {
+    let isGitRepo: Bool
+    let branch: String
+    let changedFiles: [LocalGitChangedFileDTO]
+    let diffStat: String
+}
+
+struct LocalSearchMatchDTO: Codable, Identifiable {
+    var id: String { "\(path):\(line):\(text)" }
+    let path: String
+    let line: Int
+    let text: String
+}
+
+struct ShellRunResultDTO: Codable {
+    let command: String
+    let cwd: String
+    let exitCode: Int
+    let stdout: String
+    let stderr: String
+    let durationMs: Int
+}
+
+struct AppliedFileResultDTO: Codable {
+    let path: String
+    let bytes: Int
+    let created: Bool
+}
+
+struct TerminalEntry: Identifiable {
+    let id = UUID()
+    let command: String
+    let cwd: String
+    let exitCode: Int
+    let stdout: String
+    let stderr: String
+    let durationMs: Int
+    let timestamp = Date()
 }
 
 struct ThreadDTO: Codable, Identifiable, Hashable {
@@ -73,9 +134,9 @@ struct MessageDTO: Codable, Identifiable {
     let role: String
     let author: MessageAuthorDTO
     var parts: [MessagePartDTO]
-    let artifacts: [String]?
-    let usage: MessageUsageDTO?
-    let pinned: Bool?
+    var artifacts: [String]?
+    var usage: MessageUsageDTO?
+    var pinned: Bool?
     let createdAt: String
 
     var plainText: String {
@@ -90,6 +151,9 @@ struct MessageDTO: Codable, Identifiable {
     }
     var craftScore: Int? {
         parts.first(where: { $0.type == "slop_audit" })?.craftScore
+    }
+    var slopCleanedCount: Int {
+        parts.first(where: { $0.type == "slop_audit" })?.cleanedCount ?? 0
     }
 }
 
@@ -141,10 +205,10 @@ struct ProviderDTO: Codable, Identifiable {
     let auth: String
     let baseUrl: String?
     let alias: String?
-    let badgeColor: String
-    let badgeLetter: String
+    let badgeColor: String?
+    let badgeLetter: String?
     let enabled: Bool
-    let hasKey: Bool
+    let hasKey: Bool?
     let maskedKey: String?
     let models: [ModelInfoDTO]
 }
@@ -169,8 +233,8 @@ struct QuotaStatusDTO: Codable, Identifiable {
 }
 
 struct FlowInputFieldDTO: Codable {
-    let type: String
-    let label: String
+    let type: String?
+    let label: String?
     let placeholder: String?
     let options: [String]?
 }
@@ -190,8 +254,8 @@ struct FlowDTO: Codable, Identifiable {
     let descriptionEn: String?
     let category: String?
     let estimatedCostUsd: Double?
-    let inputs: [String: FlowInputFieldDTO]
-    let steps: [FlowStepDTO]
+    let inputs: [String: FlowInputFieldDTO]?
+    let steps: [FlowStepDTO]?
 }
 
 struct FlowRunStepStateDTO: Codable {
@@ -211,6 +275,45 @@ struct FlowRunDTO: Codable, Identifiable {
     let totalCostUsd: Double
 }
 
+struct ToolManifestDTO: Codable, Identifiable {
+    let id: String
+    let name: String
+    let version: String?
+    let publisher: String?
+    let type: String?
+    let category: String?
+    let description: String?
+    let installed: Bool?
+    let enabled: Bool?
+    let policy: String?
+}
+
+struct MemoryItemDTO: Codable, Identifiable {
+    let id: String
+    let scope: String
+    let projectId: String?
+    let content: String
+    let createdAt: String?
+}
+
+struct SlashCommandDTO: Codable, Identifiable {
+    var id: String { command }
+    let command: String
+    let aliases: [String]?
+    let category: String?
+    let descTr: String?
+    let descEn: String?
+    let example: String?
+}
+
+struct UserSettingsDTO: Codable {
+    let language: String?
+    let theme: String?
+    let economyMode: Bool?
+    let tokenOptimizationEnabled: Bool?
+    let aiSlopBlockerEnabled: Bool?
+}
+
 struct UsageSummaryDTO: Codable {
     let totalCostUsd: Double
     let totalInputTokens: Int
@@ -222,15 +325,19 @@ struct OptimizationStatsDTO: Codable {
     let savedTokens: Int
     let savedCostUsd: Double
     let cacheHits: Int
+    let slopItemsBlocked: Int?
 }
 
 struct BootstrapDTO: Codable {
-    let projects: [ProjectDTO]
-    let threads: [ThreadDTO]
-    let providers: [ProviderDTO]
-    let flows: [FlowDTO]
-    let quotas: [QuotaStatusDTO]
-    let usage: UsageSummaryDTO
+    let projects: [ProjectDTO]?
+    let threads: [ThreadDTO]?
+    let providers: [ProviderDTO]?
+    let flows: [FlowDTO]?
+    let tools: [ToolManifestDTO]?
+    let quotas: [QuotaStatusDTO]?
+    let commands: [SlashCommandDTO]?
+    let settings: UserSettingsDTO?
+    let usage: UsageSummaryDTO?
     let optimization: OptimizationStatsDTO?
 }
 
@@ -243,6 +350,89 @@ struct ReferenceDraft: Identifiable, Codable {
     var artifactId: String?
     var mime: String?
     var url: String?
+}
+
+// MARK: - Markdown Block Parser (Prose + Fenced Code Cards)
+
+struct MarkdownSegment: Identifiable {
+    let id: Int
+    let isCode: Bool
+    let language: String
+    let filename: String?
+    let content: String
+}
+
+func parseMarkdownSegments(_ text: String) -> [MarkdownSegment] {
+    var result: [MarkdownSegment] = []
+    let lines = text.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+    var proseBuf: [String] = []
+    var codeBuf: [String] = []
+    var inCode = false
+    var codeLang = ""
+    var codeFile: String? = nil
+    var idx = 0
+
+    func flushProse() {
+        let joined = proseBuf.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
+        if !joined.isEmpty {
+            result.append(MarkdownSegment(id: idx, isCode: false, language: "", filename: nil, content: joined))
+            idx += 1
+        }
+        proseBuf.removeAll()
+    }
+
+    for line in lines {
+        let trimmed = line.trimmingCharacters(in: .whitespaces)
+        if trimmed.hasPrefix("```") {
+            if !inCode {
+                flushProse()
+                inCode = true
+                let info = String(trimmed.dropFirst(3)).trimmingCharacters(in: .whitespaces)
+                if let colonIdx = info.firstIndex(of: ":") {
+                    codeLang = String(info[..<colonIdx])
+                    codeFile = String(info[info.index(after: colonIdx)...])
+                } else {
+                    let parts = info.split(separator: " ").map(String.init)
+                    codeLang = parts.first ?? "text"
+                    codeFile = parts.count > 1 ? parts[1] : nil
+                }
+            } else {
+                result.append(
+                    MarkdownSegment(
+                        id: idx,
+                        isCode: true,
+                        language: codeLang.isEmpty ? "text" : codeLang,
+                        filename: codeFile,
+                        content: codeBuf.joined(separator: "\n")
+                    )
+                )
+                idx += 1
+                codeBuf.removeAll()
+                inCode = false
+                codeLang = ""
+                codeFile = nil
+            }
+        } else if inCode {
+            codeBuf.append(line)
+        } else {
+            proseBuf.append(line)
+        }
+    }
+
+    if inCode && !codeBuf.isEmpty {
+        result.append(
+            MarkdownSegment(
+                id: idx,
+                isCode: true,
+                language: codeLang.isEmpty ? "text" : codeLang,
+                filename: codeFile,
+                content: codeBuf.joined(separator: "\n")
+            )
+        )
+    } else {
+        flushProse()
+    }
+    return result
 }
 
 func formatResetCountdown(_ iso: String?, lang: AppLanguage) -> String {

@@ -150,7 +150,7 @@ export const UI_STRINGS = {
 export type UiKey = keyof typeof UI_STRINGS.tr;
 
 export function tr(lang: LanguageCode, key: UiKey): string {
-  return UI_STRINGS[lang]?.[key] ?? UI_STRINGS.tr[key];
+  return UI_STRINGS[lang]?.[key] ?? UI_STRINGS.en[key];
 }
 
 export function refRoleLabel(lang: LanguageCode, role: ReferenceRole): string {

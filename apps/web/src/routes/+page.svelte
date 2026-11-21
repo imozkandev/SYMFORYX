@@ -123,7 +123,15 @@
 
   let chatScrollEl: HTMLDivElement | undefined = $state();
 
-  const lang = $derived<LanguageCode>(settings.language || "tr");
+  const lang = $derived<LanguageCode>(settings.language || "en");
+
+  $effect(() => {
+    if (typeof document !== "undefined") {
+      // Keep document lang synced without forcing Turkish dotted-İ uppercase on English UI
+      document.documentElement.lang = lang === "tr" ? "tr" : "en";
+      document.title = "SYMFORYX — All AI Models & Tools in One Studio";
+    }
+  });
   const activeProject = $derived(projects.find((p) => p.id === activeProjectId) ?? projects[0] ?? null);
   const projectThreads = $derived(threads.filter((t) => t.projectId === activeProjectId));
   const activeThread = $derived(threads.find((t) => t.id === activeThreadId) ?? null);
