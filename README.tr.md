@@ -3,7 +3,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/brand/symforyx-banner-dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="./assets/brand/symforyx-banner-light.svg" />
-  <img alt="SYMFORYX — Tüm AI Modellerin ve Araçların Tek Stüdyoda" src="./assets/brand/symforyx-banner-dark.svg" width="100%" />
+  <img alt="SYMFORYX — Native macOS Masaüstü AI Kodlama ve Çoklu Model Stüdyosu" src="./assets/brand/symforyx-banner-dark.svg" width="100%" />
 </picture>
 
 <br />
@@ -13,156 +13,134 @@
 
 <br />
 
-![Çalışma Ortamı](https://img.shields.io/badge/Altyap%C4%B1-Bun%201.2%2B-111113?style=flat-square&labelColor=1F232D)
-![Web](https://img.shields.io/badge/Web-Svelte%205%20%2B%20Tailwind%20v4-111113?style=flat-square&labelColor=1F232D)
-![macOS](https://img.shields.io/badge/macOS-Native%20SwiftUI%20(WebView%20Yok)-1D4ED8?style=flat-square&labelColor=1F232D)
-![Depolama](https://img.shields.io/badge/Kasa-SQLite%20WAL%20%2B%20AES--256--GCM-111113?style=flat-square&labelColor=1F232D)
+![macOS](https://img.shields.io/badge/macOS-%25100%20Native%20SwiftUI%20(WebView%20Yok)-1D4ED8?style=flat-square&labelColor=1F232D)
+![Çalışma Alanı](https://img.shields.io/badge/Mod-Yerel%20Proje%20IDE%20%2B%20Terminal-111113?style=flat-square&labelColor=1F232D)
+![Motor](https://img.shields.io/badge/Motor-Bun%201.2%2B%20%2B%20SQLite%20WAL-111113?style=flat-square&labelColor=1F232D)
+![Güvenlik](https://img.shields.io/badge/Kasa-AES--256--GCM%20Yerel-111113?style=flat-square&labelColor=1F232D)
 ![Lisans](https://img.shields.io/badge/Lisans-MIT-111113?style=flat-square&labelColor=1F232D)
 
 <br />
 
-> **Sen şefsin. Modeller ve araçlar orkestra.**
-> Görseli istediğin motorla, kodu istediğin modelle üret; URL, görsel ve fikir referansları ekle; yerleşik **AI Slop Blocker** ile çıktıları mükemmelleştir; canlı token, kota, sıfırlanma süresi ve prompt maliyetini tamamen yerel olarak yönet.
+> **macOS için %100 native masaüstü AI kodlama ve üretim stüdyosu — Claude Code Desktop deneyimi, tek bir sağlayıcıya kilitlenmeden.**
+> Bilgisayarından mevcut bir proje klasörü aç ya da sıfırdan yeni proje oluştur; gerçek dosyaları düzenle, canlı Git diff’lerini incele, yerleşik terminalde komut çalıştır, istediğin modelle kod/görsel/3D/müzik üret, **AI Slop Blocker** ile kaliteyi koru ve canlı token/kota/maliyet takibi yap — hepsi ~2 MB native SwiftUI uygulamasının içinde.
 
 </div>
 
 ---
 
-## Öne Çıkan Özellikler
+## Neden SYMFORYX Masaüstü?
 
 <table>
   <tr>
     <td width="50%" valign="top">
-      <h3>Kısıtlamasız Model & Araç Matrisi</h3>
-      <p><strong>Anthropic Claude</strong>, <strong>OpenAI GPT</strong>, <strong>Google Gemini</strong>, <strong>DeepSeek</strong>, <strong>xAI Grok</strong>, <strong>OpenRouter</strong>, yerel <strong>Ollama</strong>, <strong>Flux / Fal</strong>, <strong>Stability</strong>, <strong>Ideogram</strong>, <strong>ComfyUI</strong>, Video/3D/Müzik stüdyoları ve dilediğin özel OpenAI uyumlu uç nokta veya model ID’si ile özgürce üret.</p>
+      <h3>%100 Native macOS Uygulaması (WebView Yok)</h3>
+      <p>Apple Silicon (macOS 14+) için saf <strong>SwiftUI + AppKit</strong> ile derlenir. Electron yok, tarayıcı sekmesi yok, ağır bellek tüketimi yok. Arka planda yerel Bun orkestrasyon motorunu otomatik yönetir ve tek komutla <code>/Applications/SYMFORYX.app</code> içine kurulur.</p>
     </td>
     <td width="50%" valign="top">
-      <h3>AI Slop Blocker & Zanaat Skoru (0–100)</h3>
-      <p>Çift katmanlı kalite kalkanı (<code>ANTI-SLOP ON</code> / <code>/anti-slop</code>): üretim öncesi direktifler klişe metinleri, yağcı açılışları ve neon-gradyan AI-slop arayüz kalıplarını engeller; üretim sonrası temizleyici dolgu ifadeleri ayıklayıp her mesaja canlı <code>CRAFT</code> skoru işler.</p>
+      <h3>Claude Code Tarzı Yerel Proje Motoru</h3>
+      <p><strong>Klasör Aç…</strong> ile Mac’indeki herhangi bir projeyi bağla ya da <strong>Sıfırdan…</strong> ile yeni proje başlat (<em>Boş, TypeScript/Bun, Web, Python, Swift</em>). Canlı dosya ağacında gez, native kod editöründe düzenle (<code>⌘S</code>), renkli <strong>Git Diff</strong> gör ve yerleşik <strong>Proje Terminali</strong> ile gerçek <code>zsh</code> komutları çalıştır.</p>
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <h3>Token & Maliyet Optimizasyonu</h3>
-      <p>Üst çubukta canlı <strong>Giden</strong> ve <strong>Kalan</strong> bağlam token göstergesi, gönderim öncesi tahmini prompt maliyeti, her prompt turunun gerçek maliyet fişi ve sabitlenmiş mesajları koruyarak eski bağlamı sıkıştıran otomatik optimize edici.</p>
+      <h3>Otomatik Diske Yazma & Tek Tık Uygulama</h3>
+      <p>Modeller bağlı klasörünün dosya ağacını ve Git dalını otomatik görür. <strong>AUTO-APPLY ON</strong> açıkken üretilen dosya blokları doğrudan diske yazılır; kapalıyken her mesajdaki <strong>Diske Uygula</strong> düğmesi veya <code>/apply</code> komutuyla onaylı şekilde uygularsın.</p>
     </td>
     <td width="50%" valign="top">
-      <h3>Canlı Araç Kotaları & Sıfırlanma Sayaçları</h3>
-      <p>Her sağlayıcı ve araçta ne kadar kullanım yaptığını, ne kadar kaldığını, ne zaman sıfırlanacağını (saatlik, 5 saatlik, günlük, haftalık, aylık geri sayım) ve toplam maliyeti tek ekranda gör.</p>
+      <h3>Kısıtlamasız Model & Medya Matrisi</h3>
+      <p>Kodu <strong>Claude</strong>, <strong>GPT</strong>, <strong>Gemini</strong>, <strong>DeepSeek</strong>, <strong>Grok</strong>, <strong>OpenRouter</strong> veya yerel <strong>Ollama</strong> ile yaz; görseli <strong>Flux / Fal</strong>, <strong>Stability</strong>, <strong>Ideogram</strong>, <strong>ComfyUI</strong>, Video/3D/Müzik motorlarıyla üret — dilediğin özel model ID’sini serbestçe ekle.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>AI Slop Blocker & Canlı Craft Skoru (0–100)</h3>
+      <p>Çift katmanlı kalite kalkanı (<code>ANTI-SLOP ON</code> / <code>/anti-slop</code>): üretim öncesi yönergeler klişe dili, yağcı girişleri ve mor-neon AI-slop arayüz kalıplarını engeller; üretim sonrası temizleyici dolgu ifadeleri ayıklayıp her yanıta canlı <code>CRAFT</code> skoru işler.</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>Token Optimizasyonu, Kotalar & Prompt Maliyeti</h3>
+      <p>Üst çubukta canlı <strong>Giden</strong> ve <strong>Kalan</strong> token göstergesi, gönderim öncesi maliyet tahmini, her prompt turunun gerçek maliyeti, otomatik bağlam sıkıştırma ve her araç/sağlayıcı için <strong>Kalan Kota + Sıfırlanma Geri Sayımı</strong>.</p>
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
       <h3>Evrensel <code>/referans</code> & Referans Tepsisi</h3>
-      <p>Web sitelerini, URL’leri, referans görselleri (<em>Stil, Düzen, Renk, Konu, Düzenleme Kaynağı</em> rolleriyle), mevcut artefaktları veya yazılı tasarım kısıtlarını <code>/referans &lt;url|fikir&gt;</code> ya da tepsi üzerinden doğrudan üretime bağla.</p>
+      <p>Mac’inden referans görsel (<em>Stil, Düzen, Renk, Konu, Düzenleme Kaynağı</em> rolleriyle), web sitesi/URL veya yazılı fikir/kısıtları doğrudan tepsiden ya da <code>/referans &lt;url|fikir&gt;</code> ile üretime bağla.</p>
     </td>
     <td width="50%" valign="top">
       <h3>14 Hazır Stüdyo Üretim Şeması</h3>
-      <p><strong>App Store / Play Store 5’li Mağaza Görselleri</strong>, <strong>TR+EN ASO Paketi</strong>, <strong>Video / Promo Prodüksiyonu</strong>, <strong>Kod + Görsel + 3D + Müzik</strong>, SaaS Lansman ve Marka Kimliği gibi adım bazlı model seçilebilir hazır akışlar.</p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <h3>%100 Native macOS SwiftUI Uygulaması + Web</h3>
-      <p>WebView veya Electron olmadan <strong>~2 MB native Apple Silicon SwiftUI uygulaması</strong> olarak kullan; ya da editoryal Svelte 5 Web arayüzü ve CLI’dan eriş. Tek tıkla <strong>Açık / Koyu / Sistem</strong> tema ve <strong>TR / EN</strong> dil değişimi.</p>
-    </td>
-    <td width="50%" valign="top">
-      <h3>Yerel Öncelikli Kasa & Tam Çalışma Alanı Kontrolü</h3>
-      <p>API anahtarları <strong>AES-256-GCM</strong> ile yerel olarak şifrelenir. Sohbetler, sürümlü artefaktlar, FTS5 tam metin araması ve proje hafızası yerel <strong>SQLite (WAL)</strong> veritabanında saklanır. Genel Çalışma Alanı dahil tüm çalışma alanları serbestçe oluşturulabilir ve silinebilir.</p>
+      <p><strong>App Store / Play Store 5’li Mağaza Görselleri</strong>, <strong>TR+EN ASO Paketi</strong>, <strong>Video / Promo</strong>, <strong>Kod + Görsel + 3D + Müzik</strong>, SaaS Lansman, Marka Kimliği gibi adım bazlı model seçilebilir hazır akışlar.</p>
     </td>
   </tr>
 </table>
 
 ---
 
-## Mimari Genel Bakış
-
-<div align="center">
-  <img alt="SYMFORYX Yerel Öncelikli Orkestrasyon Mimarisi" src="./assets/brand/symforyx-architecture.svg" width="100%" />
-</div>
-
----
-
-## 6 Orkestrasyon Modu
-
-| Mod | Komut / Tetikleyici | Nasıl Çalışır? |
-| :--- | :--- | :--- |
-| **Akıllı (Smart)** | Varsayılan (`<30 ms` yönlendirici) | 3 katmanlı yönlendirici `@etiket`, dosya türü, kurallar ve niyeti analiz ederek en uygun modeli otomatik seçer. |
-| **Manuel** | `@claude`, `@gpt`, `@flux`, Model Seçici | Kısıtlama olmadan dilediğin sağlayıcıyı ve özel model ID’sini sabitleyip doğrudan çalıştır. |
-| **Zincir (Chain)** | `/zincir a > b > c` | Ardışık hat: her adım bir önceki modelin metnini ve artefaktlarını doğrudan devralır. |
-| **Karşılaştır** | `/karsilastir @claude @gpt @gemini ...` | Modelleri yan yana sütunlarda paralel çalıştırır; kazanan yanıtı tek tıkla ana dal seçersin. |
-| **Konsey (Council)** | `/konsey ...` | Üretici taslak çıkarır → Eleştirmen modeller inceler → Hakem model en rafine çıktıyı sentezler. |
-| **Ajan (Agent)** | `/ajan ...` | Planla → Sandbox araçlarını (Web Araması, Kod Sandbox, Renk Paleti, MCP) kullan → Artefaktla sentezle. |
-
----
-
-## Slash Komutları (`37` Yerleşik Komut, EN + TR Takma Adlar)
-
-Yazı alanına `/` yazdığında kategorili otomatik tamamlama menüsü açılır. İngilizce komutlar ve Türkçe kısayollar birebir çalışır:
-
-| Kategori | Komutlar |
-| :--- | :--- |
-| **Medya & Tasarım** | `/image` (`/gorsel`), `/edit` (`/duzenle`), `/video`, `/music`, `/3d`, `/palette` (`/palet`), `/store-kit`, `/aso` |
-| **Kod & Önizleme** | `/code` (`/kod`), `/run` (`/calistir`), `/preview` (`/onizle`), `/review`, `/debug`, `/refactor`, `/test`, `/sql`, `/docs` |
-| **Orkestrasyon** | `/chain` (`/zincir`), `/compare` (`/karsilastir`), `/council` (`/konsey`), `/agent` (`/ajan`), `/handoff`, `/flow`, `/save-schema` |
-| **Referans & Web** | `/reference` (`/ref`, `/referans`), `/search` (`/ara`), `/read` (`/oku`), `/summarize` (`/ozetle`), `/translate` |
-| **Kalite & Kontrol** | `/anti-slop` (`/slop`), `/optimize`, `/cost`, `/quotas`, `/pin`, `/memory`, `/export`, `/clear` |
-
----
-
-## Hızlı Başlangıç
+## macOS Masaüstünde Başlatma
 
 ### Gereksinimler
+- **macOS 14+** (Apple Silicon) ve Xcode Command Line Tools (`swiftc`)
 - [Bun](https://bun.sh) `1.2+`
-- *(İsteğe bağlı, Native macOS `.app` için)* macOS 14+ ve Xcode Command Line Tools (`swiftc`)
 
-### 1. Yerelde Çalıştırma (Otomatik Port Seçimi)
+### 1. `SYMFORYX.app` Derle ve Aç
 
 ```bash
 git clone https://github.com/ozkandev/SYMFORYX.git
 cd SYMFORYX
 bun install
 
-# API sunucusu + SvelteKit arayüzünü birlikte başlatır (3000 doluysa boş port seçer)
-bun run dev
+# Native SwiftUI uygulamasını + Retina AppIcon.icns ikonunu derler ve doğrudan açar
+bun run app
 ```
 
-### 2. Üretim Derlemesi
+### 2. `/Applications` Klasörüne Kur (Spotlight & Dock’tan Aç)
 
 ```bash
-bun run build
-bun run start
+bun run app:install
 ```
 
-### 3. Native macOS Uygulamasını Derle ve Aç (WebView Yok)
+> `SYMFORYX.app` arka planda `127.0.0.1:3456` yerel motorunu otomatik başlatır — kurduktan sonra `/Applications` içinden çift tıklayarak veya `⌘Space → SYMFORYX` yazarak doğrudan kullanabilirsin.
 
-```bash
-bash apps/macos-native/build-app.sh
-open apps/macos-native/SYMFORYX.app
-```
+### 3. Bilgisayardan Proje Açma veya Sıfırdan Başlatma
+1. Sol menüdeki **Klasör Aç** (veya başlangıç ekranındaki **Bilgisayardan Proje Klasörü Aç**) düğmesiyle Mac’indeki herhangi bir proje klasörünü seç.
+2. Veya **Sıfırdan** düğmesiyle yeni bir proje klasörü oluştur (`Boş`, `TypeScript/Bun`, `Web`, `Python`, `Swift`).
+3. Sol **PROJE DOSYALARI** ağacından dosyalara tıklayıp sağdaki native **Kod Editörü**’nde düzenle (`⌘S`), **Git Diff** sekmesinden değişiklikleri gör, alttaki **Terminal** çekmecesinde `bun test` / `npm run build` / `swift build` çalıştır, **AUTO-APPLY ON** ile AI değişikliklerini doğrudan projene uygula.
 
-> `SYMFORYX.app` doğrudan `swiftc` + SwiftUI + AppKit ile derlenir, vektörel Retina `AppIcon.icns` ikonunu üretir ve çalışan bir SYMFORYX sunucusuna otomatik bağlanır (veya `3456` portunda kendi yerel motorunu başlatır).
+---
 
-### 4. CLI & Docker
+## Mimari Genel Bakış
 
-```bash
-# CLI Örnekleri
-bun run cli -- chat "@gorsel minimalist kahve dükkanı ana sayfası" --out tasarim.svg
-bun run cli -- flow list
-bun run cli -- flow run magaza-gorselleri --input appName="SYMFORYX"
-bun run cli -- keys set anthropic sk-ant-...
-bun run cli -- usage --month
+<div align="center">
+  <img alt="SYMFORYX Yerel Öncelikli Masaüstü Mimarisi" src="./assets/brand/symforyx-architecture.svg" width="100%" />
+</div>
 
-# Docker
-cp .env.example .env
-docker compose up -d
-```
+---
+
+## 6 Orkestrasyon Modu & Yerel Proje Komutları
+
+| Mod | Tetikleyici | Çalışma Şekli |
+| :--- | :--- | :--- |
+| **Akıllı (Smart)** | Varsayılan (`<30 ms` yönlendirici) | `@etiket`, dosya türü ve niyete göre en uygun modeli otomatik seçer. |
+| **Serbest / Manuel** | `@claude`, `@gpt`, `@flux`, Model Seçici | Kısıtlama olmadan dilediğin sağlayıcıyı ve özel model ID’sini kullan. |
+| **Zincir (Chain)** | `/zincir a > b > c` | Her model bir önceki adımın kodunu ve artefaktlarını doğrudan devralır. |
+| **Karşılaştır** | `/karsilastir @claude @gpt @gemini ...` | Modelleri paralel çalıştırır; en iyi çıktıyı tek tıkla ana dal seçersin. |
+| **Konsey (Council)** | `/konsey ...` | Üretici → Eleştirmenler → Hakem çoklu model sentezi. |
+| **Ajan (Agent)** | `/ajan ...` | Planla → Araçları ve yerel komutları çalıştır → Sentezle. |
+
+### Yerleşik Slash Komutları (`43` Komut, EN + TR Kısayollar)
+
+| Kategori | Komutlar |
+| :--- | :--- |
+| **Yerel Proje IDE** | `/tree` (`/agac`), `/cat` (`/dosya`), `/grep`, `/sh` (`/terminal`), `/diff`, `/apply` (`/uygula`) |
+| **Kod & Önizleme** | `/code` (`/kod`), `/run` (`/calistir`), `/preview` (`/onizle`), `/review`, `/debug`, `/refactor`, `/test`, `/sql`, `/docs` |
+| **Medya & Stüdyo** | `/image` (`/gorsel`), `/edit` (`/duzenle`), `/video`, `/music`, `/3d`, `/palette` (`/palet`), `/store`, `/aso`, `/launch`, `/ads`, `/brand` |
+| **Orkestrasyon** | `/chain` (`/zincir`), `/compare` (`/karsilastir`), `/council` (`/konsey`), `/agent` (`/ajan`), `/flow` (`/akis`), `/handoff`, `/save-schema` |
+| **Referans & Kontrol** | `/reference` (`/ref`, `/referans`), `/anti-slop` (`/slop`), `/optimize`, `/cost` (`/maliyet`), `/quota` (`/kota`), `/memory` (`/hafiza`), `/search`, `/read`, `/export` |
 
 ---
 
 ## Marka Kimliği
 
-SYMFORYX logosu, *Senfoni*’yi simgeleyen **karşılıklı iki harmonik yay** (geometrik **S** formu) ile bunların tam merkezinde birleştiği **kobalt şef düğümünü** ve iki yandaki minimal orkestrasyon kadans çizgilerini birleştirir.
+SYMFORYX logosu, *Senfoni*’yi simgeleyen **karşılıklı iki harmonik yay** (geometrik **S**) ile bunların merkezinde birleştiği **kobalt şef düğümünü** ve minimal orkestrasyon kadans çizgilerini birleştirir.
 
 <div align="center">
   <table>
@@ -186,26 +164,27 @@ SYMFORYX logosu, *Senfoni*’yi simgeleyen **karşılıklı iki harmonik yay** (
 ```text
 SYMFORYX/
 ├── apps/
-│   ├── server/           # Bun + Hono Gateway, Orkestratör, SSE akışı, REST API
-│   ├── web/              # SvelteKit (Svelte 5) + Tailwind CSS v4 editoryal web istemcisi
-│   ├── macos-native/     # %100 Native SwiftUI + AppKit macOS .app (sıfır WebView)
-│   ├── cli/              # symforyx terminal aracı
-│   └── desktop/          # İsteğe bağlı Tauri 2 kabuk yapılandırması
+│   ├── macos-native/     # ANA UYGULAMA: %100 Native SwiftUI + AppKit macOS .app (WebView yok)
+│   │   ├── Sources/      # AppMain, Models, SymforyxStore, Views, LocalWorkspaceViews
+│   │   ├── gen-icon.swift# Retina Apple .icns vektörel ikon üreticisi
+│   │   └── build-app.sh  # Doğrudan swiftc derleyici -> SYMFORYX.app
+│   ├── server/           # Yerel Bun + Hono motoru, Yerel Proje FS/Terminal/Git Motoru, Orkestratör
+│   ├── cli/              # Terminal CLI (`bun run cli -- ...`)
+│   └── web/              # İsteğe bağlı Svelte 5 yardımcı arayüz (`bun run dev:all`)
 ├── packages/
-│   ├── core/             # SymMessage şeması, tipler, 37 slash komutu, TR/EN ayrıştırıcı
-│   ├── db/               # SQLite (WAL + FTS5) depo, kotalar, AES-256-GCM Anahtar Kasası
+│   ├── core/             # SymMessage şeması, tipler, 43 slash komutu, TR/EN ayrıştırıcı
+│   ├── db/               # SQLite (WAL + FTS5) yerel depo, kotalar, AES-256-GCM Anahtar Kasası
 │   ├── providers/        # Anthropic, OpenAI, Gemini, DeepSeek, Grok, OpenRouter, Ollama, Flux, Video/3D/Ses
 │   ├── router/           # 3 Katmanlı Akıllı Yönlendirici (<30 ms)
-│   ├── context/          # Ortak bağlam, Token Optimize Edici, AI Slop Blocker (Craft Denetimi)
+│   ├── context/          # Ortak bağlam, Token Optimize Edici, AI Slop Blocker (Craft Skoru)
 │   ├── flows/            # Akış Motoru + 14 Hazır Stüdyo Şeması
-│   ├── agent/            # Planla-Uygula-Sentezle Ajan Çalıştırıcı
+│   ├── agent/            # Ajan Çalıştırıcı
 │   ├── tools-sdk/        # @symforyx/tools-sdk
 │   ├── tools-runtime/    # İzin motoru, sandbox yürütücü, MCP istemcisi
 │   ├── tools/            # Yerleşik araçlar (Web Araması, Kod Sandbox, Canlı Önizleme, WCAG Palet)
-│   └── i18n/             # Türkçe (tr.json) ve İngilizce (en.json) sözlükleri
-├── assets/brand/         # Minimal SVG logo seti, koyu/açık README banner'ları ve mimari şema
-├── flows-templates/      # YAML stüdyo akış şablonları
-└── registry/             # Araç Mağazası kataloğu
+│   └── i18n/             # Türkçe & İngilizce sözlükler
+├── assets/brand/         # Minimal SVG logo seti, koyu/açık banner'lar ve mimari şema
+└── flows-templates/      # YAML stüdyo akış şablonları
 ```
 
 ---
@@ -213,11 +192,16 @@ SYMFORYX/
 ## Test ve Doğrulama
 
 ```bash
-# Uçtan uca test paketini çalıştır (Parser, AES Kasa, Router, Bağlam, Optimizer, Slop Blocker, Akışlar, Çalışma Alanları)
+# Uçtan uca test paketini çalıştır (18 test: Yerel Proje Motoru, Çalışma Alanları, AI Slop Blocker, Optimizer, Akışlar, Kasa)
 cd apps/server && bun test tests/symforyx.test.ts
 
-# Web arayüzü tip kontrolü ve derleme
-cd apps/web && ./node_modules/.bin/svelte-check --tsconfig ./tsconfig.json && ./node_modules/.bin/vite build
+# Native macOS uygulamasını yeniden derle
+bun run app:build
+
+# İsteğe bağlı CLI kullanımı
+bun run cli -- chat "@claude temiz bir TypeScript worker pool tasarla"
+bun run cli -- flow run magaza-gorselleri --input appName="SYMFORYX"
+bun run cli -- usage --month
 ```
 
 ---
@@ -226,7 +210,7 @@ cd apps/web && ./node_modules/.bin/svelte-check --tsconfig ./tsconfig.json && ./
 
 <img src="./assets/brand/symforyx-mark.svg" alt="SYMFORYX" width="32" />
 
-**SYMFORYX** · *Sen şefsin. Modeller ve araçlar orkestra.*
+**SYMFORYX** · *Native macOS AI Kodlama ve Orkestrasyon Stüdyosu.*
 Tasarlayan ve geliştiren: **ozkandev** · MIT Lisansı · © 2026
 
 </div>
